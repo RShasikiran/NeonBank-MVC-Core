@@ -1,0 +1,137 @@
+@model IEnumerable<NeonBank.Models.User>
+@{
+    ViewData["Title"] = "Admin Control Panel";
+}
+
+<div class="container mt-2">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <div>
+            <h2 class="fw-bold mb-0" style="color: #002d72;">
+                <i class="bi bi-shield-lock me-2"></i>Administrative Control Panel
+            </h2>
+            <small class="text-muted">Full oversight of all client accounts</small>
+        </div>
+        <span class="badge bg-danger fs-6"><i class="bi bi-lock me-1"></i>ADMIN SESSION</span>
+    </div>
+
+    <%-- STAT CARDS --%>
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 p-4" style="border-left: 5px solid #b2945e !important; border-radius: 12px;">
+                <h6 class="text-muted fw-bold text-uppercase small">Total Institutional Deposits</h6>
+                <h2 class="fw-bold mb-0" style="color: #002d72;">$@ViewBag.TotalDeposits.ToString("N2")</h2>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 p-4" style="border-left: 5px solid #002d72 !important; border-radius: 12px;">
+                <h6 class="text-muted fw-bold text-uppercase small">Active Client Accounts</h6>
+                <h2 class="fw-bold mb-0" style="color: #002d72;">@ViewBag.TotalClients</h2>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 p-4" style="border-left: 5px solid #28a745 !important; border-radius: 12px;">
+                <h6 class="text-muted fw-bold text-uppercase small">Support Messages</h6>
+                <h2 class="fw-bold mb-0" style="color: #002d72;">
+                    <a asp-controller="Banking" asp-action="SupportInbox" class="text-decoration-none" style="color: #002d72;">View Inbox →</a>
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <%-- CLIENT REGISTRY TABLE --%>
+    <div class="card shadow-sm border-0 mb-5" style="border-radius: 12px; overflow: hidden;">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-bold" style="color: #002d72;">
+                <i class="bi bi-people me-2"></i>Global Client Registry
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            @if (!Model.Any())
+            {
+                <div class="text-center py-5 text-muted">
+                    <i class="bi bi-people" style="font-size: 2rem;"></i>
+                    <p class="mt-2">No client accounts registered yet.</p>
+                </div>
+            }
+            else
+            {
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Legal Name</th>
+                            <th>Email</th>
+                            <th>Account Number</th>
+                            <th class="text-end">Balance</th>
+                            <th class="text-center">Approve Loan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var client in Model)
+                        {
+                            <tr>
+                                <td class="ps-4 fw-bold">@client.FullName</td>
+                                <td class="text-muted small">@client.Email</td>
+                                <td><code>@(client.Account?.AccountNumber ?? "No Account")</code></td>
+                                <td class="text-end fw-bold" style="color: #002d72;">
+                                    $@(client.Account?.Balance.ToString("N2") ?? "0.00")
+                                </td>
+                                <td class="text-center">
+                                    @if (client.Account != null)
+                                    {
+                                        <form asp-action="ApproveLoan" asp-controller="Banking" method="post"
+                                              class="d-flex justify-content-center gap-2">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="accountId" value="@client.Account.AccountId" />
+                                            <input name="approvedAmount" type="number" step="0.01" min="0.01"
+                                                   class="form-control form-control-sm" placeholder="Amount"
+                                                   style="width: 100px;" required />
+                                            <button type="submit" class="btn btn-sm btn-success">
+                                                <i class="bi bi-check-lg"></i> Approve
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">No Account</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+
+    <%-- POST ANNOUNCEMENT --%>
+    <div class="card shadow-sm border-0" style="border-radius: 12px; overflow: hidden;">
+        <div class="card-header text-white py-3" style="background: #002d72;">
+            <h5 class="mb-0"><i class="bi bi-megaphone me-2"></i>Broadcast Announcement</h5>
+        </div>
+        <div class="card-body p-4">
+            <form asp-action="PostNews" asp-controller="Banking" method="post" class="row g-3">
+                @Html.AntiForgeryToken()
+                <div class="col-md-4">
+                    <label class="fw-bold small">Headline</label>
+                    <input name="title" class="form-control" placeholder="e.g. System Maintenance" required />
+                </div>
+                <div class="col-md-3">
+                    <label class="fw-bold small">Priority</label>
+                    <select name="priority" class="form-select">
+                        <option value="Normal">Normal</option>
+                        <option value="Urgent">Urgent</option>
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <label class="fw-bold small">Content</label>
+                    <input name="content" class="form-control" placeholder="Announcement details..." required />
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-bank">
+                        <i class="bi bi-broadcast me-2"></i>Broadcast to All Clients
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

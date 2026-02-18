@@ -1,0 +1,59 @@
+@{
+    ViewData["Title"] = "Secure Login";
+    Layout = "_Layout";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow border-0" style="border-top: 5px solid #002d72 !important; border-radius: 12px; overflow: hidden;">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <i class="bi bi-shield-lock" style="font-size: 2.5rem; color: #002d72;"></i>
+                    <h3 class="mt-2 fw-bold" style="color: #002d72;">Secure Access Portal</h3>
+                    <p class="text-muted small">NeonBank Institutional Banking</p>
+                </div>
+
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success">
+                        <i class="bi bi-check-circle me-2"></i>@TempData["Success"]
+                    </div>
+                }
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle me-2"></i>@ViewBag.Error
+                    </div>
+                }
+
+                <form asp-action="Login" asp-controller="Account" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label class="fw-bold">Client Email</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-envelope"></i></span>
+                            <input name="email" type="email" class="form-control" placeholder="you@example.com" required />
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="fw-bold">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-lock"></i></span>
+                            <input name="password" type="password" class="form-control" placeholder="••••••••" required />
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-bank w-100 py-2">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>AUTHORIZE ACCESS
+                    </button>
+                </form>
+
+                <hr class="my-4" />
+                <p class="text-center text-muted small mb-0">
+                    New client?
+                    <a asp-action="Register" asp-controller="Account" class="fw-bold" style="color: #002d72;">Open an Account →</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

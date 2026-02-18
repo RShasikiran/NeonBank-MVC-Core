@@ -1,0 +1,70 @@
+@model NeonBank.Models.User
+@{
+    ViewData["Title"] = "Open Account";
+    Layout = "_Layout";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow border-0" style="border-radius: 12px; overflow: hidden;">
+            <div style="background: #002d72; padding: 30px; text-align: center;">
+                <i class="bi bi-person-plus" style="font-size: 2.5rem; color: #b2945e;"></i>
+                <h3 class="mt-2 fw-bold text-white">Account Registration</h3>
+                <p class="text-white-50 small mb-0">Join NeonBank — Your trusted financial partner</p>
+            </div>
+            <div class="card-body p-5">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <asp-validation-summary asp-validation-type="All" class="mb-0"></asp-validation-summary>
+                    </div>
+                }
+
+                <form asp-action="Register" asp-controller="Account" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label class="fw-bold">Full Legal Name</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-person"></i></span>
+                            <input asp-for="FullName" class="form-control" placeholder="e.g. John Smith" required />
+                        </div>
+                        <span asp-validation-for="FullName" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="fw-bold">Email Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-envelope"></i></span>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="you@example.com" required />
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-4">
+                        <label class="fw-bold">Security Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-lock"></i></span>
+                            <input asp-for="Password" type="password" class="form-control" placeholder="Minimum 6 characters" required />
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+                    <button type="submit" class="btn btn-bank w-100 py-2">
+                        <i class="bi bi-check-circle me-2"></i>CREATE ACCOUNT
+                    </button>
+                </form>
+
+                <hr class="my-4" />
+                <p class="text-center text-muted small mb-0">
+                    Already a client?
+                    <a asp-action="Login" asp-controller="Account" class="fw-bold" style="color: #002d72;">Sign In →</a>
+                </p>
+            </div>
+            <div class="card-footer bg-light text-center py-2">
+                <small class="text-muted"><i class="bi bi-shield-check me-1"></i>New accounts receive a $500 welcome bonus</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

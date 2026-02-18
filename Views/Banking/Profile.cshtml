@@ -1,0 +1,80 @@
+@model NeonBank.Models.User
+@{
+    ViewData["Title"] = "Client Profile";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-7">
+        <div class="card shadow border-0" style="border-radius: 14px; overflow: hidden;">
+            <div style="background: linear-gradient(135deg, #002d72, #004aad); padding: 30px;">
+                <div class="d-flex align-items-center">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center me-4"
+                         style="width: 70px; height: 70px; background: #b2945e; font-size: 2rem; color: white; font-weight: bold;">
+                        @Model.FullName[0].ToString().ToUpper()
+                    </div>
+                    <div>
+                        <h3 class="text-white mb-0 fw-bold">@Model.FullName</h3>
+                        <span class="badge @(Model.Role == "Admin" ? "bg-danger" : "bg-success") mt-1">
+                            @Model.Role.ToUpper()
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-4" style="color: #002d72;">
+                    <i class="bi bi-person-lines-fill me-2"></i>Client Information
+                </h5>
+
+                <div class="row mb-3 align-items-center">
+                    <div class="col-sm-4 text-muted fw-bold">
+                        <i class="bi bi-person me-1"></i>Full Name
+                    </div>
+                    <div class="col-sm-8 fw-bold">@Model.FullName</div>
+                </div>
+                <hr />
+                <div class="row mb-3 align-items-center">
+                    <div class="col-sm-4 text-muted fw-bold">
+                        <i class="bi bi-envelope me-1"></i>Email Address
+                    </div>
+                    <div class="col-sm-8">@Model.Email</div>
+                </div>
+                <hr />
+                <div class="row mb-3 align-items-center">
+                    <div class="col-sm-4 text-muted fw-bold">
+                        <i class="bi bi-credit-card me-1"></i>Account Number
+                    </div>
+                    <div class="col-sm-8">
+                        <code class="fs-5">@(Model.Account?.AccountNumber ?? "Not assigned")</code>
+                    </div>
+                </div>
+                <hr />
+                <div class="row mb-3 align-items-center">
+                    <div class="col-sm-4 text-muted fw-bold">
+                        <i class="bi bi-wallet me-1"></i>Current Balance
+                    </div>
+                    <div class="col-sm-8 fw-bold" style="color: #002d72; font-size: 1.2rem;">
+                        $@(Model.Account?.Balance.ToString("N2") ?? "0.00")
+                    </div>
+                </div>
+                <hr />
+                <div class="row align-items-center">
+                    <div class="col-sm-4 text-muted fw-bold">
+                        <i class="bi bi-shield-check me-1"></i>Membership Role
+                    </div>
+                    <div class="col-sm-8">
+                        <span class="badge @(Model.Role == "Admin" ? "bg-danger" : "bg-primary") fs-6">
+                            @Model.Role.ToUpper()
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-light text-center py-3">
+                <small class="text-muted">
+                    <i class="bi bi-info-circle me-1"></i>
+                    To update your legal information, please
+                    <a asp-controller="Banking" asp-action="ContactSupport">contact institutional support</a>.
+                </small>
+            </div>
+        </div>
+    </div>
+</div>

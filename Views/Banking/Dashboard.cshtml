@@ -1,0 +1,86 @@
+@model NeonBank.Models.Account
+@{
+    ViewData["Title"] = "Fund Transfer";
+}
+
+<div class="container mt-2">
+    <div class="card p-4 shadow-sm mb-4" style="border-left: 5px solid #002d72; border-radius: 12px;">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h6 class="text-muted mb-1">Current Balance</h6>
+                <h1 class="fw-bold mb-0" style="color: #002d72;">$@Model.Balance.ToString("N2")</h1>
+                <p class="text-secondary mb-0 small">Account: <code>@Model.AccountNumber</code></p>
+            </div>
+            <i class="bi bi-wallet2" style="font-size: 3rem; color: #b2945e; opacity: 0.5;"></i>
+        </div>
+    </div>
+
+    <div class="card p-4 shadow-sm mb-4" style="border-radius: 12px;">
+        <h5 class="fw-bold mb-3" style="color: #002d72;"><i class="bi bi-arrow-left-right me-2"></i>Transfer Funds</h5>
+        <form asp-action="Transfer" asp-controller="Banking" method="post" class="row g-3">
+            @Html.AntiForgeryToken()
+            <div class="col-md-5">
+                <label class="form-label fw-bold small">Recipient Account Number</label>
+                <input name="receiverAccNo" class="form-control" placeholder="e.g. NB-1234567" required />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-bold small">Amount (USD)</label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input name="amount" type="number" step="0.01" min="0.01" class="form-control" placeholder="0.00" required />
+                </div>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-bank w-100">
+                    <i class="bi bi-send me-1"></i>Send Money
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="card shadow-sm" style="border-radius: 12px; overflow: hidden;">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-bold" style="color: #002d72;"><i class="bi bi-clock-history me-2"></i>Recent Transactions</h5>
+            <a asp-controller="Banking" asp-action="TransactionHistory" class="btn btn-sm btn-outline-secondary">View All</a>
+        </div>
+        <div class="card-body p-0">
+            @{
+                var txList = Model.Transactions?
+                    .OrderByDescending(t => t.TransactionDate)
+                    .Take(10)
+                    .ToList() ?? new List<NeonBank.Models.Transaction>();
+            }
+            @if (!txList.Any())
+            {
+                <div class="text-center py-5 text-muted">
+                    <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                    <p class="mt-2">No transactions yet.</p>
+                </div>
+            }
+            else
+            {
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Date</th>
+                            <th>Description</th>
+                            <th class="text-end pe-4">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var tx in txList)
+                        {
+                            <tr>
+                                <td class="ps-4 text-muted small">@tx.TransactionDate.ToString("MMM dd, yyyy")</td>
+                                <td>@tx.Description</td>
+                                <td class="text-end pe-4 fw-bold @(tx.Amount < 0 ? "text-danger" : "text-success")">
+                                    @(tx.Amount < 0 ? "-" : "+")$@Math.Abs(tx.Amount).ToString("N2")
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>

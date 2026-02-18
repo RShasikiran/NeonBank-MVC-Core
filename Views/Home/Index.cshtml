@@ -1,0 +1,138 @@
+@model NeonBank.Models.Account?
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="row">
+    @* LEFT SIDEBAR *@
+    <div class="col-md-3 mb-4">
+        <div class="list-group shadow-sm rounded">
+            <a asp-controller="Home" asp-action="Index" class="list-group-item list-group-item-action active" style="background: #002d72; border-color: #002d72; color: white;">
+                <i class="bi bi-speedometer2 me-2"></i>Dashboard
+            </a>
+            <a asp-controller="Banking" asp-action="Dashboard" class="list-group-item list-group-item-action">
+                <i class="bi bi-arrow-left-right me-2"></i>Fund Transfer
+            </a>
+            <a asp-controller="Banking" asp-action="RequestLoan" class="list-group-item list-group-item-action">
+                <i class="bi bi-bank me-2"></i>Loan Application
+            </a>
+            <a asp-controller="Banking" asp-action="TransactionHistory" class="list-group-item list-group-item-action">
+                <i class="bi bi-list-check me-2"></i>Transaction History
+            </a>
+            <a asp-controller="Banking" asp-action="Profile" class="list-group-item list-group-item-action">
+                <i class="bi bi-person me-2"></i>My Profile
+            </a>
+            <a asp-controller="Banking" asp-action="ContactSupport" class="list-group-item list-group-item-action">
+                <i class="bi bi-headset me-2"></i>Support
+            </a>
+            <a asp-controller="Account" asp-action="Logout" class="list-group-item list-group-item-action text-danger">
+                <i class="bi bi-box-arrow-right me-2"></i>Logout
+            </a>
+        </div>
+    </div>
+
+    @* MAIN CONTENT *@
+    <div class="col-md-9">
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-2"></i>@ViewBag.Error</div>
+        }
+
+        @if (Model != null)
+        {
+            <div class="card shadow-sm p-4 mb-4" style="border-left: 5px solid #b2945e; border-radius: 12px;">
+                <h6 class="text-muted text-uppercase fw-bold mb-1">Total Available Balance</h6>
+                <h1 class="display-4 fw-bold mb-3" style="color: #002d72;">$@Model.Balance.ToString("N2")</h1>
+                <div class="d-flex justify-content-between align-items-end">
+                    <div>
+                        <p class="mb-0">Account Holder: <strong>@User.Identity!.Name</strong></p>
+                        <p class="text-secondary mb-0 small">Account No: <code>@Model.AccountNumber</code></p>
+                    </div>
+                    <span class="badge bg-success fs-6"><i class="bi bi-shield-check me-1"></i>Verified Client</span>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <div class="card p-3 shadow-sm border-0 h-100">
+                        <h5 class="fw-bold" style="color: #002d72;"><i class="bi bi-arrow-left-right me-2"></i>Recent Activity</h5>
+                        <p class="small text-muted">View your latest incoming and outgoing transactions.</p>
+                        <div class="mt-auto">
+                            <a asp-controller="Banking" asp-action="TransactionHistory" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-list-ul me-1"></i>View Full Statement
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card p-3 shadow-sm border-0 h-100">
+                        <h5 class="fw-bold" style="color: #002d72;"><i class="bi bi-headset me-2"></i>Institutional Support</h5>
+                        <p class="small text-muted">Need help? Reach our 24/7 corporate support desk.</p>
+                        <div class="mt-auto">
+                            <a asp-controller="Banking" asp-action="ContactSupport" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-envelope me-1"></i>Contact Support
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card p-3 shadow-sm border-0 h-100">
+                        <h5 class="fw-bold" style="color: #002d72;"><i class="bi bi-send me-2"></i>Send Money</h5>
+                        <p class="small text-muted">Transfer funds instantly to any NeonBank account.</p>
+                        <div class="mt-auto">
+                            <a asp-controller="Banking" asp-action="Dashboard" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-arrow-right me-1"></i>Transfer Funds
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card p-3 shadow-sm border-0 h-100">
+                        <h5 class="fw-bold" style="color: #002d72;"><i class="bi bi-bank me-2"></i>Apply for Loan</h5>
+                        <p class="small text-muted">Request institutional credit with flexible terms.</p>
+                        <div class="mt-auto">
+                            <a asp-controller="Banking" asp-action="RequestLoan" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-file-text me-1"></i>Apply Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @* CORPORATE BULLETINS *@
+        <div class="mt-2">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="fw-bold mb-0" style="color: #002d72;"><i class="bi bi-megaphone me-2"></i>Corporate Bulletins</h4>
+                <span class="text-muted small">Updated: @DateTime.Now.ToString("MMM dd, yyyy")</span>
+            </div>
+
+            @if (ViewBag.News != null && ((List<NeonBank.Models.Announcement>)ViewBag.News).Any())
+            {
+                <div class="row g-3">
+                    @foreach (var news in (List<NeonBank.Models.Announcement>)ViewBag.News)
+                    {
+                        <div class="col-md-4">
+                            <div class="card shadow-sm border-0 h-100" style="border-radius: 10px; overflow: hidden;">
+                                <div class="card-body">
+                                    <span class="badge @(news.Priority == "Urgent" ? "bg-danger" : "bg-primary") mb-2">@news.Priority</span>
+                                    <h6 class="card-title fw-bold">@news.Title</h6>
+                                    <p class="card-text small text-muted">@news.Content</p>
+                                </div>
+                                <div class="card-footer bg-light py-2">
+                                    <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>@news.PostedDate.ToString("MMM dd, yyyy")</small>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-light border text-center py-4">
+                    <i class="bi bi-bell-slash me-2"></i>No institutional announcements at this time.
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,4 @@
+wwwroot\css\site.css
+wwwroot\js\site.js
+C:\Users\R.Shasi kiran\source\repos\NeonBank1\NeonBank\wwwroot\css\site.css
+C:\Users\R.Shasi kiran\source\repos\NeonBank1\NeonBank\wwwroot\js\site.js
